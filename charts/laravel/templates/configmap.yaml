@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "laravel.fullname" . }}-env
+  labels:
+    {{- include "laravel.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ include "laravel.fullname" . | quote }}
+  APP_ENV: {{ .Values.app.env | quote }}
+  APP_DEBUG: {{ .Values.app.debug | quote }}
+  APP_URL: {{ .Values.app.url | quote }}
+  LOG_CHANNEL: stderr
+  LOG_LEVEL: info
+  DB_CONNECTION: pgsql
+  DB_HOST: {{ include "laravel.dbHost" . | quote }}
+  DB_PORT: "5432"
+  DB_DATABASE: {{ .Values.database.name | quote }}
+  DB_USERNAME: {{ .Values.database.username | quote }}
+  {{- if .Values.redis.enabled }}
+  REDIS_HOST: {{ include "laravel.redisHost" . | quote }}
+  REDIS_PORT: "6379"
+  CACHE_STORE: redis
+  SESSION_DRIVER: redis
+  QUEUE_CONNECTION: redis
+  {{- end }}
+  MAIL_MAILER: {{ .Values.mail.mailer | quote }}
+  MAIL_HOST: {{ .Values.mail.host | quote }}
+  MAIL_PORT: {{ .Values.mail.port | quote }}
+  MAIL_USERNAME: {{ .Values.mail.username | quote }}
+  MAIL_FROM_ADDRESS: {{ .Values.mail.from | quote }}
+  MAIL_FROM_NAME: {{ .Values.mail.fromName | quote }}

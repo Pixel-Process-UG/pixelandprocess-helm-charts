@@ -1,0 +1,79 @@
+replicaCount: 1
+
+image:
+  repository: ""
+  tag: latest
+  pullPolicy: Always
+
+imagePullSecrets: []
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  host: ""
+  tlsSecretName: ""
+
+app:
+  key: ""
+  url: ""
+  env: production
+  debug: "false"
+
+mail:
+  mailer: smtp
+  host: smtp.postmarkapp.com
+  port: "587"
+  username: ""
+  password: ""
+  from: ""
+  fromName: "Preview App"
+
+database:
+  enabled: true
+  size: 5Gi
+  name: app
+  username: app
+  password: ""
+
+redis:
+  enabled: true
+
+queue:
+  enabled: true
+  replicaCount: 1
+
+scheduler:
+  enabled: true
+
+env: []
+
+envFrom: []
+
+resources:
+  web:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  worker:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: hcloud-volumes
+
+nodePort: 80
