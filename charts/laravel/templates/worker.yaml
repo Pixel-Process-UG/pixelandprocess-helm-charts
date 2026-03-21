@@ -13,6 +13,9 @@ spec:
       {{- include "laravel.workerSelectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        logging.pixelandprocess.de/framework: "laravel"
+        reloader.stakater.com/auto: "true"
       labels:
         {{- include "laravel.workerSelectorLabels" . | nindent 8 }}
     spec:
