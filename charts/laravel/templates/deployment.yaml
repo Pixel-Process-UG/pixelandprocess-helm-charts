@@ -5,6 +5,19 @@ metadata:
   labels:
     {{- include "laravel.labels" . | nindent 4 }}
 spec:
+  {{- if not (empty .Values.strategy) }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  {{- else if .Values.persistence.enabled }}
+  strategy:
+    type: Recreate
+  {{- else }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  {{- end }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -55,16 +68,20 @@ spec:
           {{- end }}
           livenessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.probes.liveness.path | default "/" }}
               port: http
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds | default 30 }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds | default 10 }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold | default 6 }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds | default 5 }}
           readinessProbe:
             httpGet:
-              path: /
+              path: {{ .Values.probes.readiness.path | default "/" }}
               port: http
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds | default 5 }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold | default 3 }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds | default 3 }}
           resources:
             {{- toYaml .Values.resources.web | nindent 12 }}
           {{- if .Values.persistence.enabled }}
@@ -72,6 +89,25 @@ spec:
             - name: storage
               mountPath: /app/storage/app/public
           {{- end }}
+      {{- if .Values.highAvailability.enabled }}
+      affinity:
+        podAntiAffinity:
+          {{- if eq (default "soft" .Values.highAvailability.podAntiAffinity.type) "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  {{- include "laravel.selectorLabels" . | nindent 18 }}
+              topologyKey: kubernetes.io/hostname
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    {{- include "laravel.selectorLabels" . | nindent 20 }}
+                topologyKey: kubernetes.io/hostname
+          {{- end }}
+      {{- end }}
       {{- if .Values.persistence.enabled }}
       volumes:
         - name: storage

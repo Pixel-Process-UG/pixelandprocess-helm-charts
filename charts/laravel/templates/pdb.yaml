@@ -1,0 +1,13 @@
+{{- if and .Values.highAvailability.enabled (gt (int .Values.replicaCount) 1) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "laravel.fullname" . }}-pdb
+  labels:
+    {{- include "laravel.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.highAvailability.pdb.minAvailable | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "laravel.selectorLabels" . | nindent 6 }}
+{{- end }}

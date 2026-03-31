@@ -77,3 +77,26 @@ persistence:
   storageClass: hcloud-volumes
 
 nodePort: 80
+
+highAvailability:
+  enabled: false
+  pdb:
+    minAvailable: 1
+  podAntiAffinity:
+    type: soft  # soft or hard
+
+probes:
+  liveness:
+    path: /
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    failureThreshold: 6
+    timeoutSeconds: 5
+  readiness:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+    timeoutSeconds: 3
+
+strategy: {}
