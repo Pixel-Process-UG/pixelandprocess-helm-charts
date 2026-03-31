@@ -3,6 +3,15 @@ entries:
   laravel:
   - apiVersion: v2
     appVersion: "11.0"
+    created: "2026-03-31T11:18:13.386497158Z"
+    description: Generic Laravel application chart with queue worker support
+    digest: 215fb51d423b0e95667f4790c9841223e3a8ebe24d6cd36c864b9988f5c817f4
+    name: laravel
+    urls:
+    - https://github.com/Pixel-Process-UG/pixelandprocess-helm-charts/releases/download/laravel-0.3.0/laravel-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "11.0"
     created: "2026-03-21T19:01:50.521480264Z"
     description: Generic Laravel application chart with queue worker support
     digest: 72e0531fa7d004b23e9d710166ea2cec0fd28d1c81c9474fa77b41190a83d071
@@ -10,4 +19,4 @@ entries:
     urls:
     - https://github.com/Pixel-Process-UG/pixelandprocess-helm-charts/releases/download/laravel-0.2.0/laravel-0.2.0.tgz
     version: 0.2.0
-generated: "2026-03-21T19:01:50.521486817Z"
+generated: "2026-03-31T11:18:13.386505854Z"
